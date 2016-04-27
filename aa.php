@@ -5,7 +5,8 @@
 
 
 
-$message1 = "this is my story in my way";
+
+$message1 = "this is my \nstory in\n my way";
 
 
 $image = new Imagick();
@@ -17,14 +18,22 @@ $image->newImage($rectangle_width, $rectangle_height, $pixel);
 $draw->setFillColor('black');
 $draw->setFont('AvantGarde-Demi.ttf');
 
-
+var_dump($testbox = imagettfbbox(75, 0, 'AvantGarde-Demi.ttf', $message1));
 
 $font_size = fit($message1, $rectangle_width, $rectangle_height);
-$draw->setFontSize( $font_size );
-$image->annotateImage($draw, 0, $rectangle_height -10, 0, "$message1");
-$image->setImageFormat('png');
-header('Content-type: image/png');
-echo $image;
+
+// $fh = getHeight($message1,$rectangle_height,$rectangle_height);
+
+// $newlinecount = explode("\n",$message1);
+
+//  count($newlinecount);
+
+// echo $fh*count($newlinecount);
+// // $draw->setFontSize( $font_size );
+// // $image->annotateImage($draw, 0, $rectangle_height -10, 0, "$message1");
+// // $image->setImageFormat('png');
+// // header('Content-type: image/png');
+// // echo $image;
 
 function fit($text, $actual_width, $font_size)
 {
@@ -40,6 +49,25 @@ function fit($text, $actual_width, $font_size)
 		else
 			$font_size--;
 	}
+}
+function getHeight($m,$s,$h){
+
+	
+		$font = new Imagick();
+		$draw = new ImagickDraw();
+		$draw->setFont('AvantGarde-Demi.ttf');
+		$draw->setFontSize( $s );
+		
+
+		
+
+		$font_metrics = $font->queryFontMetrics($draw, "$m");
+		$text_height = $font_metrics['boundingBox']['y2'] - $font_metrics['boundingBox']['y1'];
+		
+			return $s;
+		
+	
+
 }
 
 ?>
