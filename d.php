@@ -1,35 +1,32 @@
 <?php 
 $m = $_POST['t'];
-$fontSize = fitTobounds(75, 0, 'AvantGarde-Demi.ttf',$m ,700,75);
+$rw = $_POST['w'];
+$rh = $_POST['h'];
 
 
-//$fontSize = fitToWidth($fontSize, 0, 'AvantGarde-Demi.ttf', $m, 700);
 
-
+$fontSize = fitTobounds($rh, 0, 'AvantGarde-Demi.ttf',$m ,$rw,$rh);
 $image = new Imagick();
-
 $pixel = new ImagickPixel( 'gray' );
-$rectangle_width = 700;
-$rectangle_height = 75;
-$image->newImage(700, 75, $pixel);
-
+$image->newImage($rw, $rh, $pixel);
 
 $draw = new ImagickDraw();
 $draw->setFillColor('black');
 $draw->setFont('AvantGarde-Demi.ttf');
-
 $draw->setFontSize( $fontSize );
 
 
-$wrapped = wrap($m, 700, $fontSize, 0, 'AvantGarde-Demi.ttf');
+$wrapped = wrap($m, $rw, $fontSize, 0, 'AvantGarde-Demi.ttf');
 
+
+$testbox = imagettfbbox($fontSize, 0, 'AvantGarde-Demi.ttf', $wrapped);
+
+$offsety = abs($testbox[7]);
+$offsetx = 0;
+
+
+$image->annotateImage($draw, 0, $offsety, 0, "$wrapped");
 	
-	$image->annotateImage($draw, 0, $fontSize, 0, "$wrapped");
-	
-
-
-
-
 $image->setImageFormat('png');
 header('Content-type: image/png');
 echo $image;
