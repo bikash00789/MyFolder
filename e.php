@@ -1,41 +1,30 @@
-<?php 
-$m = $_POST['t'];
-$fontSize = fitTobounds(75, 0, 'AvantGarde-Demi.ttf',$m ,700,75);
+<?php
+$rw=$_POST['w'];
+$rh=$_POST['h'];
+$fontSize=$rh;
+$fontFile = 'AvantGarde-Demi.ttf';
+$text = $_POST['t'];
+$fontSize = fitTobounds($fontSize, 0, $fontFile, $text, $rw, $rh);
 
 
-//$fontSize = fitToWidth($fontSize, 0, 'AvantGarde-Demi.ttf', $m, 700);
-
-
+$wrapped = wrap($text, $rw, $fontSize, 0, $fontFile);
 $image = new Imagick();
-
 $pixel = new ImagickPixel( 'gray' );
-$rectangle_width = 700;
-$rectangle_height = 75;
-$image->newImage(700, 75, $pixel);
 
-
+$image->newImage($rw, $rh, $pixel);
 $draw = new ImagickDraw();
 $draw->setFillColor('black');
 $draw->setFont('AvantGarde-Demi.ttf');
-
 $draw->setFontSize( $fontSize );
 
-
-$wrapped = wrap($m, 700, $fontSize, 0, 'AvantGarde-Demi.ttf');
-
-	
-	$image->annotateImage($draw, 0, $fontSize, 0, "$wrapped");
-	
+$testbox = imagettfbbox($fontSize, 0, $fontFile, $wrapped);
+$offsety = abs($testbox[7]);
 
 
-
-
+$image->annotateImage($draw, 0, $offsety, 0, "$wrapped");
 $image->setImageFormat('png');
 header('Content-type: image/png');
 echo $image;
-
-
-
 
 
 
@@ -46,7 +35,6 @@ function fitToBounds($fontSize, $angle, $fontFile, $text, $width, $height){
 			$testbox = imagettfbbox($fontSize, $angle, $fontFile, $wrapped);
 			$actualHeight = abs($testbox[1] - $testbox[7]);
 			if($actualHeight <= $height){
-				
 				return $fontSize;
 			}else{
 				$fontSize--;
@@ -55,7 +43,7 @@ function fitToBounds($fontSize, $angle, $fontFile, $text, $width, $height){
 		return $fontSize;
 }
 
-function wrap($text, $width, $fontSize, $angle, $fontFile){
+function wrap($text, $width=100, $fontSize=12, $angle=0, $fontFile=null){
 		if($fontFile === null){
 			$fontFile = $this->fontFile;
 		}
@@ -64,13 +52,16 @@ function wrap($text, $width, $fontSize, $angle, $fontFile){
 		foreach ($arr as $word){
 			$teststring = $ret . ' ' . $word;
 			$testbox = imagettfbbox($fontSize, $angle, $fontFile, $teststring);
-			if ($testbox[2] > $width){
+
+			if (($testbox[2]*3/4 )> $width){
+				
 				$ret .= ($ret == "" ? "" : "\n") . $word;
 			} else {
+				
 				$ret .= ($ret == "" ? "" : ' ') . $word;
 			}
 		}
 		return $ret;
-	}
+}
 
 ?>

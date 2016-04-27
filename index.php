@@ -1,4 +1,4 @@
-<form name="f1" method="post" action="d.php">
+<form name="f1" method="post" action="e.php">
     
 <table align="center" style="margin-top: 300px;" width="200px" border="2px" cellpadding="15px" cellspacing="0px">
 
